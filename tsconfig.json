@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "compilerOptions": {
     "target": "es2020",
     "module": "es2020",
@@ -16,18 +15,3 @@
   },
   "include": ["src"]
 }
-=======
-    "compilerOptions": {
-      "target": "es6",
-      "module": "es6",
-      "outDir": "dist",
-      "rootDir": "src",
-      "strict": true,
-      "moduleResolution": "node",
-      "declaration": true,
-      "sourceMap": true
-    },
-    "include": ["src"]
-  }
-  
->>>>>>> 8288797 (asd)
