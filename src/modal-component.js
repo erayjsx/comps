@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css } from "lit";
 
 export class ModalComponent extends LitElement {
   static properties = {
@@ -16,31 +16,49 @@ export class ModalComponent extends LitElement {
     .hidden {
       display: none;
     }
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.5);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-wrapper {
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+    }
   `;
 
   constructor() {
     super();
     this.isOpen = false;
-    this.modalId = '';
-    this.toggleClass = 'hidden';
+    this.modalId = "";
+    this.toggleClass = "hidden";
     this.speedOpen = 50;
     this.speedClose = 250;
   }
 
   firstUpdated() {
     this.modalElement = this.shadowRoot.getElementById(this.modalId);
-    this.overlayElement = this.shadowRoot.querySelector('[data-modal-overlay]');
-    this.wrapperElement = this.shadowRoot.querySelector('[data-modal-wrapper]');
-    this.inputElement = this.shadowRoot.querySelector('[data-modal-input-focus]');
-    
-    document.addEventListener('keydown', this.handleKeydown.bind(this));
+    this.overlayElement = this.shadowRoot.querySelector("[data-modal-overlay]");
+    this.wrapperElement = this.shadowRoot.querySelector("[data-modal-wrapper]");
+    this.inputElement = this.shadowRoot.querySelector(
+      "[data-modal-input-focus]"
+    );
+
+    document.addEventListener("keydown", this.handleKeydown.bind(this));
   }
 
   render() {
     return html`
-      <div id="${this.modalId}" class="${this.isOpen ? '' : this.toggleClass}">
-        <div data-modal-overlay>
-          <div data-modal-wrapper>
+      <div id="${this.modalId}" class="${this.isOpen ? "" : this.toggleClass}">
+        <div data-modal-overlay class="modal-overlay">
+          <div data-modal-wrapper class="modal-wrapper">
             <slot></slot>
             <button @click="${this.close}" data-modal-close>Close</button>
           </div>
@@ -51,8 +69,8 @@ export class ModalComponent extends LitElement {
 
   open() {
     this.isOpen = true;
-    document.documentElement.style.overflow = 'hidden';
-    
+    document.documentElement.style.overflow = "hidden";
+
     setTimeout(() => {
       if (this.overlayElement) {
         this.toggleClasses(this.overlayElement, true);
@@ -75,7 +93,7 @@ export class ModalComponent extends LitElement {
       this.toggleClasses(this.wrapperElement, false);
     }
 
-    document.documentElement.style.overflow = '';
+    document.documentElement.style.overflow = "";
 
     setTimeout(() => {
       this.isOpen = false;
@@ -83,9 +101,9 @@ export class ModalComponent extends LitElement {
   }
 
   toggleClasses(element, isOpening) {
-    const inClasses = element.getAttribute('data-class-in').split(' ');
-    const outClasses = element.getAttribute('data-class-out').split(' ');
-    
+    const inClasses = element.getAttribute("data-class-in")?.split(" ") || [];
+    const outClasses = element.getAttribute("data-class-out")?.split(" ") || [];
+
     if (isOpening) {
       element.classList.remove(...outClasses);
       element.classList.add(...inClasses);
@@ -102,8 +120,8 @@ export class ModalComponent extends LitElement {
     const firstFocusableEl = focusableEls[0];
     const lastFocusableEl = focusableEls[focusableEls.length - 1];
 
-    this.modalElement.addEventListener('keydown', (e) => {
-      if (e.key !== 'Tab') return;
+    this.modalElement.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab") return;
 
       if (e.shiftKey) {
         if (document.activeElement === firstFocusableEl) {
@@ -120,10 +138,10 @@ export class ModalComponent extends LitElement {
   }
 
   handleKeydown(event) {
-    if (event.key === 'Escape' || event.keyCode === 27) {
+    if (event.key === "Escape" || event.keyCode === 27) {
       this.close();
     }
   }
 }
 
-customElements.define('modal-component', ModalComponent);
+customElements.define("modal-component", ModalComponent);

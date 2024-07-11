@@ -1,1 +1,0 @@
-import './MyModal.js';
