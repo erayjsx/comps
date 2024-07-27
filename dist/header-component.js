@@ -1,38 +1,98 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-import { LitElement, html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
-let HeaderComponent = class HeaderComponent extends LitElement {
+import { LitElement, html, css } from 'lit';
+import { classMap } from 'lit/directives/class-map.js';
+class HeaderComponent extends LitElement {
     constructor() {
-        super(...arguments);
-        this.title = "Default Title";
+        super();
+        this.logo = 'Logo';
+        this.menuItems = [];
+        this.rightSectionItems = [];
+        this.menuOpen = false;
+    }
+    toggleMenu() {
+        this.menuOpen = !this.menuOpen;
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        const menuItemsAttr = this.getAttribute('data-menu-items');
+        const rightSectionItemsAttr = this.getAttribute('data-right-section-items');
+        if (menuItemsAttr) {
+            this.menuItems = JSON.parse(menuItemsAttr);
+        }
+        if (rightSectionItemsAttr) {
+            this.rightSectionItems = JSON.parse(rightSectionItemsAttr);
+        }
     }
     render() {
-        return html `<header>${this.title}</header>`;
+        return html `
+      <header>
+        <div class="logo">${this.logo}</div>
+        <nav class=${classMap({ open: this.menuOpen })}>
+          ${this.menuItems.map(item => html `<a href="${item.link}">${item.name}</a>`)}
+        </nav>
+        <div class="right-section">
+          ${this.rightSectionItems.map(item => html `<a href="${item.link}">${item.name}</a>`)}
+          <div class="menu-icon" @click=${this.toggleMenu}>☰</div>
+        </div>
+      </header>
+    `;
     }
-};
+}
 HeaderComponent.styles = css `
     :host {
       display: block;
-      background-color: #f8f8f8;
-      padding: 16px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: #333;
+      color: white;
+    }
+    .logo {
       font-size: 1.5em;
-      text-align: center;
+    }
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+    }
+    .right-section {
+      display: flex;
+      gap: 20px;
+    }
+    .menu-icon {
+      display: none;
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      nav {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        right: 0;
+        background: #333;
+        padding: 10px 20px;
+      }
+      nav.open {
+        display: flex;
+      }
+      .menu-icon {
+        display: block;
+      }
     }
   `;
-__decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
-], HeaderComponent.prototype, "title", void 0);
-HeaderComponent = __decorate([
-    customElement("header-component")
-], HeaderComponent);
-export { HeaderComponent };
+HeaderComponent.properties = {
+    logo: { type: String },
+    menuItems: { type: Array },
+    rightSectionItems: { type: Array },
+    menuOpen: { type: Boolean }
+};
+customElements.define('header-component', HeaderComponent);
 //# sourceMappingURL=header-component.js.map
